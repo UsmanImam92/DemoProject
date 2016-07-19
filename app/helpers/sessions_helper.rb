@@ -1,5 +1,22 @@
 module SessionsHelper
 
+  # The Rails framework provides a large number of helpers for
+  # working with assets, dates, forms, numbers and model objects,
+  # to name a few. These helpers are available to all templates
+  # by default.
+
+  # In addition to using the standard template helpers provided,
+  # creating custom helpers to extract complicated logic or reusable
+  # functionality is strongly encouraged. By default, each controller
+  # will include all helpers. These helpers are only accessible on
+  # the controller through #helpers
+
+  # Use helpers if you're working in a view (template) and you need to
+  # build a complex bit of HTML such as a <table>. Or, if you want to
+  # change some presentation data that's not connected to the database.
+  # Use models when you're working with database objects, and you want to
+  # simplify the business logic.
+
   # Logs in the given user.
   def log_in(user)
     session[:user_id] = user.id

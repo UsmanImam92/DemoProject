@@ -1,4 +1,15 @@
 class User < ActiveRecord::Base
+
+  # the belongs_to relation is automatically generated on the migration command.(microposts model)
+  # However has_many etc. relations must be manually defined.
+  # child relation dependency is created automatically. Parent relation with
+  # the child must be declared in the parent model. as done below
+  # Here the option dependent: :destroy arranges for the dependent
+  # microposts to be destroyed when the user itself is destroyed.
+  # This prevents userless microposts from being stranded in the
+  # database when admins choose to remove users from the system.
+  has_many :microposts , dependent: :destroy
+
   attr_accessor :remember_token
   before_save { email.downcase! }
   validates :name,  presence: true, length: { maximum: 50 }
@@ -34,6 +45,14 @@ class User < ActiveRecord::Base
   def self.new_token
     SecureRandom.urlsafe_base64
   end
+
+
+  # Defines a proto-feed.
+  # See "Following users" for the full implementation.
+  def feed
+    Micropost.where("user_id = ?", id)
+  end
+
 
   # Returns true if the given token matches the digest.
   def authenticated?(remember_token)
