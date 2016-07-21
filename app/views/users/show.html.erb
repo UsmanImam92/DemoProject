@@ -6,12 +6,20 @@
         <%= gravatar_for @user %>
         <%= @user.name %>
       </h1>
-       <h6> <%= @user.email %> </h6>
-       <h6 class="jumbotron"> <%= @user.about_me %> </h6>
+
+    </section>
+    <section class="stats">
+      <%= render 'shared/stats' %>
+    </section>
+
+    <section>
+      <h6> <%= @user.email %> </h6>
+      <h6 class="jumbotron"> <%= @user.about_me %> </h6>
     </section>
   </aside>
 
   <div class="col-md-8">
+    <%= render 'follow_form' if logged_in? %>-
     <% if @user.microposts.any? %>
         <h3>Microposts (<%= @user.microposts.count %>)</h3>
         <ol class="microposts">

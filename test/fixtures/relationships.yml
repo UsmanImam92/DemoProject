@@ -1,0 +1,5 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# the generated relationship fixture also violates the uniqueness
+# constraint imposed by the corresponding migration .
+# The solution—removing the fixture contents

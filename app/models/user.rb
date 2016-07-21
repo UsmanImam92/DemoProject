@@ -10,6 +10,56 @@ class User < ActiveRecord::Base
   # database when admins choose to remove users from the system.
   has_many :microposts , dependent: :destroy
 
+
+  has_many :comments , dependent: :destroy
+
+
+  # the user following another user is now identified with the foreign
+  # key follower_id, so we have to tell that to Rails.
+  # Since destroying a user should also destroy that user’s
+  # relationships, we’ve added dependent: :destroy to the association
+
+  has_many :active_relationships, class_name:  "Relationship",
+                                  foreign_key: "follower_id",
+                                  dependent:   :destroy
+
+
+  # the information needed to extract an array of followers is
+  # already present in the relationships table (which we are
+  # treating as the active_relationships table). the technique
+  # is exactly the same as for followed users, with the roles of
+  # follower_id and followed_id reversed,and with passive_relationships
+  # in place of active_relationships.
+
+  has_many :passive_relationships, class_name:  "Relationship",
+                                   foreign_key: "followed_id",
+                                   dependent:   :destroy
+
+
+
+  # By default, in a has_many :through association Rails looks for a
+  # foreign key corresponding to the singular version of the association.
+  # Rails would see “followeds” and use the singular “followed”, assembling
+  # a collection using the followed_id in the relationships table.
+  # But user.followeds is rather awkward, so we’ll write user.following
+  # instead. Naturally, Rails allows us to override the default,
+  # in this case using the source parameter, which explicitly tells
+  # Rails that the source of the following array is the set of
+  # followed ids.
+  # The association defined below leads to a powerful combination of Active Record
+  # and array-like behavior.
+
+
+  has_many :following, through: :active_relationships, source: :followed
+
+  #  noting that we could actually omit the :source key for followers.
+  # because, in the case of a :followers attribute, Rails will singularize
+  # “followers” and automatically look for the foreign key follower_id in this case
+  has_many :followers, through: :passive_relationships
+
+
+
+
   attr_accessor :remember_token
   before_save { email.downcase! }
   validates :name,  presence: true, length: { maximum: 50 }
@@ -50,8 +100,28 @@ class User < ActiveRecord::Base
   # Defines a proto-feed.
   # See "Following users" for the full implementation.
   def feed
-    Micropost.where("user_id = ?", id)
+    following_ids = "SELECT followed_id FROM relationships
+                     WHERE  follower_id = :user_id"
+    Micropost.where("user_id IN (#{following_ids})
+                     OR user_id = :user_id", user_id: id)
   end
+
+
+  # Follows a user.
+  def follow(other_user)
+    active_relationships.create(followed_id: other_user.id)
+  end
+
+  # Unfollows a user.
+  def unfollow(other_user)
+    active_relationships.find_by(followed_id: other_user.id).destroy
+  end
+
+  # Returns true if the current user is following the other user.
+  def following?(other_user)
+    following.include?(other_user)
+  end
+
 
 
   # Returns true if the given token matches the digest.

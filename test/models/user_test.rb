@@ -87,4 +87,40 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
+  # we use following? to make sure the user isn’t following the other user,
+  # use follow to follow another user, use following? to verify that the
+  # operation succeeded, and finally unfollow and verify that it worked
+
+  test "should follow and unfollow a user" do
+    usman = users(:usman)
+    archer  = users(:archer)
+    assert_not usman.following?(archer)
+    usman.follow(archer)
+    assert usman.following?(archer)
+    assert archer.followers.include?(usman)
+    usman.unfollow(archer)
+    assert_not usman.following?(archer)
+  end
+
+
+  test "feed should have the right posts" do
+    usman = users(:usman)
+    archer  = users(:archer)
+    lana = users(:lana)
+    # Posts from followed user
+    lana.microposts.each do |post_following|
+      assert usman.feed.include?(post_following)
+    end
+    # Posts from self
+    usman.microposts.each do |post_self|
+      assert usman.feed.include?(post_self)
+    end
+    # Posts from unfollowed user
+    archer.microposts.each do |post_unfollowed|
+      assert_not usman.feed.include?(post_unfollowed)
+    end
+  end
+
+
+
 end

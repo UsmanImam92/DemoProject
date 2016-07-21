@@ -12,10 +12,19 @@ class Micropost < ActiveRecord::Base
 
   # stabby lambda” syntax for an object called a Proc (procedure) or
   # lambda, which is an anonymous function (a function created without
-  # a name). The stabby lambda -> takes in a block (Section 4.3.2) and
+  # a name). The stabby lambda -> takes in a block  and
   # returns a Proc, which can then be evaluated with the call method.
   # To pull them out in reverse order
   default_scope -> { order(created_at: :desc) }
+
+
+
+
+  has_many :comments , dependent: :destroy
+
+
+
+
 
   # to test the presence of the user_id
   validates :user_id, presence: true

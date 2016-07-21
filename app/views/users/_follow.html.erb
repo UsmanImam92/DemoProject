@@ -1,0 +1,10 @@
+<%= form_for(current_user.active_relationships.build) do |f| %>
+    <div><%= hidden_field_tag :followed_id, @user.id %></div>
+    <%= f.submit "Follow", class: "btn btn-primary" %>
+<% end %>
+
+
+<!-- note that the follow form doesn’t have any content
+other than the button, but it still needs to send the followed_id
+ to the controller. We accomplish this with the hidden_field_tag
+ method -->
