@@ -27,13 +27,34 @@ class MicropostsController < ApplicationController
   end
 
 
+  def edit
+    @micropost = Micropost.find_by_id(params[:id])
+
+  end
+
+
+  def show_all_microposts
+    @microposts = Micropost.includes(:user)
+    render json: @microposts
+  end
+
   def destroy
     @micropost.destroy
     flash[:success] = "Micropost deleted"
     redirect_to request.referrer || root_url
   end
 
+
+  def post
+    @micropost = Micropost.new(micropost_params)
+    if @micropost.save
+      render json: @micropost
+    end
+  end
+
   private
+
+
 
   # microposts_params permits only the micropost’s content attribute
   # to be modified through the web.

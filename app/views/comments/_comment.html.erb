@@ -6,7 +6,7 @@
   <span class="timestamp">
     Posted <%= time_ago_in_words(comment.created_at) %> ago.
     <% if current_user?(comment.user) %>
-      <%= link_to "delete", comment, method: :delete,
+      <%= link_to "delete", micropost_comment_path, method: :delete,
                   data: { confirm: "You sure?" } %>
     <% end %>
   </span>

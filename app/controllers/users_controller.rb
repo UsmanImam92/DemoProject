@@ -9,6 +9,14 @@ class UsersController < ApplicationController
 
   end
 
+
+  def display_user
+    @user = current_user
+    render json: @user
+  end
+
+
+
   def show
     @user = User.find(params[:id])
     @microposts = @user.microposts.paginate(page: params[:page])
@@ -20,14 +28,17 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
+
     if @user.save
       log_in @user
       flash[:success] = "Welcome to the Twitter Clone!"
-      redirect_to @user
+      render json: @user
     else
-      render 'signup'
+      render json: @user
     end
   end
+
+
 
   # To get the delete links to work, we need to add a destroy action
   # which finds the corresponding user and destroys it with the
@@ -74,11 +85,19 @@ class UsersController < ApplicationController
   end
 
 
+  def show_all_users
+    @user = User.all
+    render json: @user
+  end
+
+
+
+
   private
 
   def user_params
-    params.require(:user).permit(:name, :email, :password,
-                                 :password_confirmation,:about_me)
+    params.require(:user).permit(:name, :email,:about_me, :password,
+                                 :password_confirmation)
   end
 
   # Confirms an admin user.

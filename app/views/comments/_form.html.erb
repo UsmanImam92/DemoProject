@@ -1,0 +1,4 @@
+<%= form_for ([@micropost, @micropost.comments.build]) do |f| %>
+    <%= f.text_area :content, placeholder: "Comment" %>
+    <%= f.button :submit %>
+<% end %>

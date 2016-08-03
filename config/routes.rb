@@ -18,6 +18,15 @@ Rails.application.routes.draw do
   delete 'logout' => 'sessions#destroy'
 
 
+  get 'test' => 'static_pages#test_method'
+  get 'all' => 'users#show_all_users'
+  get 'feed' => 'microposts#show_all_microposts'
+  get 'person' => 'users#display_user'
+
+
+  get 'post' => 'microposts#post'
+
+
   # URLs for following and followers will look like /users/1/following
   # and /users/1/followers, and that is exactly what the code below arranges.
   # Since both pages will be showing data, the proper HTTP verb is a GET

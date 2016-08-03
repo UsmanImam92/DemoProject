@@ -1,3 +1,9 @@
+usman:
+  name: Usman Imam
+  email: usmanpimam@gmail.com
+  password_digest: <%= User.digest('password') %>
+  admin: true
+
 orange:
   content: "I just ate an orange!"
   created_at: <%= 10.minutes.ago %>
